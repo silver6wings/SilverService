@@ -8,12 +8,6 @@ host = 'https://api.telegram.org/'
 
 junchao_id = 1870334527
 
-post_data =  {
-  "chat_id": junchao_id,
-  "text": "Hello World",
-  "parse_mode":"Markdown"
-}
-
 
 def getUpdatesUrl() :
     return '%s%s/getUpdates' % (host, bot_token)
@@ -23,13 +17,20 @@ def getSendMessageUrl():
     return '%s%s/sendMessage' % (host, bot_token)
 
 
-def sendMessage():
-    return
+def sendMessage(text: str):
+    post_data = {
+        "chat_id": junchao_id,
+        "text": text,
+        "parse_mode": "Markdown"
+    }
 
-
-if __name__ == '__main__':
     res = requests.post(
         getSendMessageUrl(),
         data=post_data
     )
     print(res.text)
+    return
+
+
+if __name__ == '__main__':
+    sendMessage('Hello world')
