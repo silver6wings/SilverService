@@ -11,7 +11,7 @@ cache_path = '_data/cache.json'
 cache = {}
 
 content_path = '_data/content_{}.html'
-content = None
+content = {}
 
 
 @app.route('/', methods=['get'])
@@ -22,11 +22,11 @@ def root():
 # POST接口，用于上传页面内容
 @app.route('/html/upload_webpage/<key>', methods=['POST'])
 def upload_content(key):
-    global content
-    content = request.data.decode('utf-8')  # 从请求中获取内容
-
-    with open(content_path.format(key), 'w') as f:
-        f.write(content)
+    content[key] = request.data.decode('utf-8')  # 从请求中获取内容
+    path = content_path.format(key)
+    print(path)
+    with open(path, 'w') as f:
+        f.write(content[key])
     return "Content uploaded successfully"
 
 
@@ -34,15 +34,15 @@ def upload_content(key):
 @app.route('/html/display_webpage/<key>', methods=['GET'])
 def display_content(key):
     global content
-    if content is None:
+    if key not in content:
         if os.path.exists(content_path.format(key)):
             with open(content_path.format(key), 'r') as f:
-                content = f.read()
+                content[key] = f.read()
 
-    if content is None:
+    if key not in content:
         return "No content available"
     else:
-        return content
+        return content[key]
 
 
 # 将缓存数据保存到本地文件
